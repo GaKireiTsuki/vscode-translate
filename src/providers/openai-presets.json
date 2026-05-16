@@ -1,0 +1,195 @@
+[
+  {
+    "id": "openai",
+    "label": "OpenAI",
+    "baseUrl": "https://api.openai.com/v1",
+    "defaultModel": "gpt-4o-mini",
+    "models": [
+      "gpt-5.5",
+      "gpt-5.4-mini",
+      "gpt-5.4-nano",
+      "gpt-5.2-pro",
+      "gpt-5.2",
+      "gpt-5.1",
+      "gpt-5.1-codex",
+      "gpt-5",
+      "gpt-5-mini",
+      "gpt-4.1",
+      "gpt-4.1-mini",
+      "gpt-4o",
+      "gpt-4o-mini"
+    ]
+  },
+  {
+    "id": "anthropic",
+    "label": "Anthropic (Claude)",
+    "baseUrl": "https://api.anthropic.com/v1",
+    "defaultModel": "claude-sonnet-4-5",
+    "models": [
+      "claude-opus-4-7",
+      "claude-opus-4-6",
+      "claude-sonnet-4-6",
+      "claude-opus-4-5",
+      "claude-sonnet-4-5",
+      "claude-haiku-4-5",
+      "claude-opus-4-1",
+      "claude-sonnet-4-0"
+    ]
+  },
+  {
+    "id": "gemini",
+    "label": "Google Gemini",
+    "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai",
+    "defaultModel": "gemini-2.5-flash",
+    "models": [
+      "gemini-3.1-pro-preview",
+      "gemini-3-pro-preview",
+      "gemini-2.5-pro",
+      "gemini-2.5-flash"
+    ]
+  },
+  {
+    "id": "xai",
+    "label": "xAI (Grok)",
+    "baseUrl": "https://api.x.ai/v1",
+    "defaultModel": "grok-3-mini",
+    "models": ["grok-4-fast-reasoning", "grok-4", "grok-3", "grok-3-mini"]
+  },
+  {
+    "id": "deepseek",
+    "label": "DeepSeek",
+    "baseUrl": "https://api.deepseek.com/v1",
+    "defaultModel": "deepseek-chat",
+    "models": ["deepseek-chat", "deepseek-reasoner"]
+  },
+  {
+    "id": "moonshot",
+    "label": "Moonshot (Kimi)",
+    "baseUrl": "https://api.moonshot.cn/v1",
+    "defaultModel": "kimi-k2.5",
+    "models": ["kimi-k2.5", "kimi-k2-thinking", "kimi-latest"]
+  },
+  {
+    "id": "zhipu",
+    "label": "Zhipu (智谱 GLM)",
+    "baseUrl": "https://open.bigmodel.cn/api/paas/v4",
+    "defaultModel": "glm-4-flash",
+    "models": ["glm-4-plus", "glm-4-air", "glm-4-flash"]
+  },
+  {
+    "id": "qwen",
+    "label": "Alibaba Qwen (DashScope)",
+    "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "defaultModel": "qwen-plus",
+    "models": ["qwen3-max", "qwen-plus", "qwen-turbo"]
+  },
+  {
+    "id": "mistral",
+    "label": "Mistral",
+    "baseUrl": "https://api.mistral.ai/v1",
+    "defaultModel": "mistral-small-latest",
+    "models": [
+      "pixtral-large-latest",
+      "mistral-large-latest",
+      "magistral-medium-2506",
+      "magistral-small-2506",
+      "mistral-small-latest",
+      "ministral-8b-latest"
+    ]
+  },
+  {
+    "id": "cohere",
+    "label": "Cohere",
+    "baseUrl": "https://api.cohere.ai/compatibility/v1",
+    "defaultModel": "command-r",
+    "models": [
+      "command-a-03-2025",
+      "command-a-reasoning-08-2025",
+      "command-r-plus",
+      "command-r"
+    ]
+  },
+  {
+    "id": "groq",
+    "label": "Groq",
+    "baseUrl": "https://api.groq.com/openai/v1",
+    "defaultModel": "llama-3.3-70b-versatile",
+    "models": [
+      "meta-llama/llama-4-scout-17b-16e-instruct",
+      "llama-3.3-70b-versatile",
+      "deepseek-r1-distill-llama-70b",
+      "qwen-qwq-32b",
+      "openai/gpt-oss-120b"
+    ]
+  },
+  {
+    "id": "together",
+    "label": "Together AI",
+    "baseUrl": "https://api.together.xyz/v1",
+    "defaultModel": "meta-llama/Meta-Llama-3.3-70B-Instruct-Turbo",
+    "models": [
+      "meta-llama/Meta-Llama-3.3-70B-Instruct-Turbo",
+      "Qwen/Qwen2.5-72B-Instruct-Turbo",
+      "deepseek-ai/DeepSeek-V3",
+      "mistralai/Mixtral-8x22B-Instruct-v0.1"
+    ]
+  },
+  {
+    "id": "fireworks",
+    "label": "Fireworks",
+    "baseUrl": "https://api.fireworks.ai/inference/v1",
+    "defaultModel": "accounts/fireworks/models/llama-v3p3-70b-instruct",
+    "models": [
+      "accounts/fireworks/models/deepseek-r1",
+      "accounts/fireworks/models/deepseek-v3",
+      "accounts/fireworks/models/llama-v3p3-70b-instruct",
+      "accounts/fireworks/models/qwen2-vl-72b-instruct"
+    ]
+  },
+  {
+    "id": "deepinfra",
+    "label": "DeepInfra",
+    "baseUrl": "https://api.deepinfra.com/v1/openai",
+    "defaultModel": "meta-llama/Llama-3.3-70B-Instruct",
+    "models": [
+      "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+      "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+      "meta-llama/Llama-3.3-70B-Instruct",
+      "deepseek-ai/DeepSeek-V3",
+      "deepseek-ai/DeepSeek-R1",
+      "Qwen/QwQ-32B"
+    ]
+  },
+  {
+    "id": "cerebras",
+    "label": "Cerebras",
+    "baseUrl": "https://api.cerebras.ai/v1",
+    "defaultModel": "llama3.3-70b",
+    "models": ["llama3.3-70b", "gpt-oss-120b", "qwen-3-32b"]
+  },
+  {
+    "id": "huggingface",
+    "label": "Hugging Face Inference",
+    "baseUrl": "https://api-inference.huggingface.co/v1",
+    "defaultModel": "meta-llama/Llama-3.1-8B-Instruct",
+    "models": ["meta-llama/Llama-3.1-8B-Instruct", "moonshotai/Kimi-K2-Instruct"]
+  },
+  {
+    "id": "baseten",
+    "label": "Baseten",
+    "baseUrl": "https://inference.baseten.co/v1",
+    "defaultModel": "Qwen/Qwen3-235B-A22B-Instruct-2507",
+    "models": [
+      "Qwen/Qwen3-235B-A22B-Instruct-2507",
+      "deepseek-ai/DeepSeek-V3.1",
+      "moonshotai/Kimi-K2-Instruct-0905"
+    ]
+  },
+  {
+    "id": "ollama",
+    "label": "Ollama (local)",
+    "baseUrl": "http://localhost:11434/v1",
+    "defaultModel": "llama3.2",
+    "models": ["llama3.2", "qwen2.5", "mistral", "gemma3", "phi4"]
+  }
+]

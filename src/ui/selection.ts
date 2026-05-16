@@ -27,13 +27,13 @@ export class SelectionHandler {
   async runCommand(): Promise<void> {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
-      void vscode.window.showWarningMessage("[translate] No active editor.");
+      void vscode.window.showWarningMessage(vscode.l10n.t("No active editor."));
       return;
     }
     const range = new vscode.Range(editor.selection.start, editor.selection.end);
     const text = editor.document.getText(range).trim();
     if (!text) {
-      void vscode.window.showWarningMessage("[translate] No selection.");
+      void vscode.window.showWarningMessage(vscode.l10n.t("No selection."));
       return;
     }
     await this.translateAndShow(editor, range, text);
@@ -62,7 +62,7 @@ export class SelectionHandler {
     const targetLang = resolveTargetLanguage(cfg);
     try {
       const result = await vscode.window.withProgress(
-        { location: vscode.ProgressLocation.Window, title: "Translate…" },
+        { location: vscode.ProgressLocation.Window, title: vscode.l10n.t("Translating…") },
         () => this.translator.translate({ text, targetLang }),
       );
 
@@ -76,18 +76,18 @@ export class SelectionHandler {
       }
 
       const md = new vscode.MarkdownString();
-      md.appendMarkdown(`**Translate** → \`${targetLang}\`\n\n`);
+      md.appendMarkdown(`**${vscode.l10n.t("Translation")}** → \`${targetLang}\`\n\n`);
       md.appendText(result.text);
       this.hover.showAdhoc(editor.document.uri, range, md);
       await vscode.commands.executeCommand("editor.action.showHover");
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      void vscode.window.showErrorMessage(`[translate] ${message}`);
+      void vscode.window.showErrorMessage(message);
     }
   }
 
   private ensureOutput(): vscode.OutputChannel {
-    if (!this.output) this.output = vscode.window.createOutputChannel("Translate");
+    if (!this.output) this.output = vscode.window.createOutputChannel("Fine Translate");
     return this.output;
   }
 

@@ -1,0 +1,25 @@
+import type { ProviderId } from "./types";
+
+export const PROVIDER_LABELS: Record<ProviderId, string> = {
+  openai: "OpenAI",
+  anthropic: "Anthropic (Claude)",
+  gemini: "Google Gemini",
+  xai: "xAI (Grok)",
+  deepseek: "DeepSeek",
+  moonshot: "Moonshot (Kimi)",
+  zhipu: "Zhipu (智谱 GLM)",
+  qwen: "Alibaba Qwen",
+  mistral: "Mistral",
+  cohere: "Cohere",
+  groq: "Groq",
+  together: "Together AI",
+  fireworks: "Fireworks",
+  deepinfra: "DeepInfra",
+  cerebras: "Cerebras",
+  huggingface: "Hugging Face",
+  baseten: "Baseten",
+  ollama: "Ollama (local)",
+  deepl: "DeepL",
+  youdao: "Youdao",
+  baidu: "Baidu",
+};

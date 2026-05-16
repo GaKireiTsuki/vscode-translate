@@ -1,59 +1,94 @@
 {
-  "name": "vscode-translate",
-  "displayName": "Translate",
-  "description": "Lightweight in-editor translation: select text, hover, or use the command palette. Supports OpenAI-compatible LLMs (OpenAI / Claude / DeepSeek / Kimi / 智谱 / Ollama / ...), DeepL, Youdao, and Baidu.",
-  "version": "0.1.0",
-  "publisher": "your-publisher-id",
+  "name": "fine-translate",
+  "displayName": "%displayName%",
+  "description": "%description%",
+  "version": "0.2.0",
+  "publisher": "FineSoft",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GaKireiTsuki/vscode-translate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GaKireiTsuki/vscode-translate/issues"
+  },
+  "homepage": "https://github.com/GaKireiTsuki/vscode-translate#readme",
+  "qna": "https://github.com/GaKireiTsuki/vscode-translate/issues",
+  "keywords": [
+    "translate",
+    "translation",
+    "translator",
+    "i18n",
+    "openai",
+    "claude",
+    "anthropic",
+    "gemini",
+    "deepseek",
+    "kimi",
+    "moonshot",
+    "qwen",
+    "ollama",
+    "grok",
+    "xai",
+    "groq",
+    "mistral",
+    "deepl",
+    "youdao",
+    "baidu",
+    "llm",
+    "翻译"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other"
+    "Other",
+    "Education"
   ],
   "main": "./dist/extension.js",
+  "l10n": "./l10n",
   "activationEvents": [
     "onStartupFinished"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "translate.selection",
-        "title": "Translate: Translate Selection"
+        "command": "fine-translate.selection",
+        "title": "%command.selection.title%"
       },
       {
-        "command": "translate.toggleHover",
-        "title": "Translate: Toggle Hover Translation"
+        "command": "fine-translate.toggleHover",
+        "title": "%command.toggleHover.title%"
       },
       {
-        "command": "translate.setApiKey",
-        "title": "Translate: Set API Key…"
+        "command": "fine-translate.setApiKey",
+        "title": "%command.setApiKey.title%"
       },
       {
-        "command": "translate.clearApiKey",
-        "title": "Translate: Clear API Key…"
+        "command": "fine-translate.clearApiKey",
+        "title": "%command.clearApiKey.title%"
       },
       {
-        "command": "translate.clearCache",
-        "title": "Translate: Clear Cache"
+        "command": "fine-translate.clearCache",
+        "title": "%command.clearCache.title%"
       },
       {
-        "command": "translate.showUsagePanel",
-        "title": "Translate: Show Usage"
+        "command": "fine-translate.showUsagePanel",
+        "title": "%command.showUsagePanel.title%"
       },
       {
-        "command": "translate.resetStats",
-        "title": "Translate: Reset Statistics"
+        "command": "fine-translate.resetStats",
+        "title": "%command.resetStats.title%"
       },
       {
-        "command": "translate.switchProvider",
-        "title": "Translate: Switch Provider"
+        "command": "fine-translate.switchProvider",
+        "title": "%command.switchProvider.title%"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "translate.selection",
+          "command": "fine-translate.selection",
           "when": "editorHasSelection",
           "group": "1_modification"
         }
@@ -61,79 +96,344 @@
     },
     "keybindings": [
       {
-        "command": "translate.selection",
+        "command": "fine-translate.selection",
         "key": "ctrl+shift+t",
         "mac": "cmd+shift+t",
         "when": "editorTextFocus && editorHasSelection"
       }
     ],
     "configuration": {
-      "title": "Translate",
+      "title": "%config.title%",
       "properties": {
-        "translate.activeProvider": {
+        "fine-translate.activeProvider": {
           "type": "string",
           "default": "openai",
           "enum": [
             "openai",
+            "anthropic",
+            "gemini",
+            "xai",
+            "deepseek",
+            "moonshot",
+            "zhipu",
+            "qwen",
+            "mistral",
+            "cohere",
+            "groq",
+            "together",
+            "fireworks",
+            "deepinfra",
+            "cerebras",
+            "huggingface",
+            "baseten",
+            "ollama",
             "deepl",
             "youdao",
             "baidu"
           ],
           "enumDescriptions": [
-            "OpenAI-compatible (OpenAI / Claude / DeepSeek / Kimi / 智谱 / Ollama / ...)",
-            "DeepL API",
-            "Youdao Translation",
-            "Baidu Translation"
+            "OpenAI · gpt-4o-mini",
+            "Anthropic (Claude) · claude-sonnet-4-5",
+            "Google Gemini · gemini-2.5-flash",
+            "xAI (Grok) · grok-3-mini",
+            "DeepSeek · deepseek-chat",
+            "Moonshot (Kimi) · kimi-k2.5",
+            "Zhipu (智谱 GLM) · glm-4-flash",
+            "Alibaba Qwen (DashScope) · qwen-plus",
+            "Mistral · mistral-small-latest",
+            "Cohere · command-r",
+            "Groq · llama-3.3-70b-versatile",
+            "Together AI · meta-llama/Meta-Llama-3.3-70B-Instruct-Turbo",
+            "Fireworks · accounts/fireworks/models/llama-v3p3-70b-instruct",
+            "DeepInfra · meta-llama/Llama-3.3-70B-Instruct",
+            "Cerebras · llama3.3-70b",
+            "Hugging Face Inference · meta-llama/Llama-3.1-8B-Instruct",
+            "Baseten · Qwen/Qwen3-235B-A22B-Instruct-2507",
+            "Ollama (local) · llama3.2",
+            "%config.activeProvider.enum.deepl%",
+            "%config.activeProvider.enum.youdao%",
+            "%config.activeProvider.enum.baidu%"
           ],
-          "description": "Active translation provider."
+          "markdownDescription": "%config.activeProvider.markdownDescription%"
         },
-        "translate.providers.openai.baseUrl": {
+        "fine-translate.providers.openai.baseUrl": {
           "type": "string",
-          "default": "https://api.openai.com/v1",
-          "description": "Base URL for the OpenAI-compatible endpoint."
+          "default": "",
+          "enum": [
+            "",
+            "https://api.openai.com/v1",
+            "https://api.anthropic.com/v1",
+            "https://generativelanguage.googleapis.com/v1beta/openai",
+            "https://api.x.ai/v1",
+            "https://api.deepseek.com/v1",
+            "https://api.moonshot.cn/v1",
+            "https://open.bigmodel.cn/api/paas/v4",
+            "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "https://api.mistral.ai/v1",
+            "https://api.cohere.ai/compatibility/v1",
+            "https://api.groq.com/openai/v1",
+            "https://api.together.xyz/v1",
+            "https://api.fireworks.ai/inference/v1",
+            "https://api.deepinfra.com/v1/openai",
+            "https://api.cerebras.ai/v1",
+            "https://api-inference.huggingface.co/v1",
+            "https://inference.baseten.co/v1",
+            "http://localhost:11434/v1"
+          ],
+          "enumDescriptions": [
+            "%config.followPreset%",
+            "OpenAI",
+            "Anthropic (Claude)",
+            "Google Gemini",
+            "xAI (Grok)",
+            "DeepSeek",
+            "Moonshot (Kimi)",
+            "Zhipu (智谱 GLM)",
+            "Alibaba Qwen (DashScope)",
+            "Mistral",
+            "Cohere",
+            "Groq",
+            "Together AI",
+            "Fireworks",
+            "DeepInfra",
+            "Cerebras",
+            "Hugging Face Inference",
+            "Baseten",
+            "Ollama (local)"
+          ],
+          "markdownDescription": "%config.openai.baseUrl.markdownDescription%"
         },
-        "translate.providers.openai.model": {
+        "fine-translate.providers.openai.model": {
           "type": "string",
-          "default": "gpt-4o-mini",
-          "description": "Model name for the OpenAI-compatible provider."
+          "default": "",
+          "enum": [
+            "",
+            "gpt-5.5",
+            "gpt-5.4-mini",
+            "gpt-5.4-nano",
+            "gpt-5.2-pro",
+            "gpt-5.2",
+            "gpt-5.1",
+            "gpt-5.1-codex",
+            "gpt-5",
+            "gpt-5-mini",
+            "gpt-4.1",
+            "gpt-4.1-mini",
+            "gpt-4o",
+            "gpt-4o-mini",
+            "claude-opus-4-7",
+            "claude-opus-4-6",
+            "claude-sonnet-4-6",
+            "claude-opus-4-5",
+            "claude-sonnet-4-5",
+            "claude-haiku-4-5",
+            "claude-opus-4-1",
+            "claude-sonnet-4-0",
+            "gemini-3.1-pro-preview",
+            "gemini-3-pro-preview",
+            "gemini-2.5-pro",
+            "gemini-2.5-flash",
+            "grok-4-fast-reasoning",
+            "grok-4",
+            "grok-3",
+            "grok-3-mini",
+            "deepseek-chat",
+            "deepseek-reasoner",
+            "kimi-k2.5",
+            "kimi-k2-thinking",
+            "kimi-latest",
+            "glm-4-plus",
+            "glm-4-air",
+            "glm-4-flash",
+            "qwen3-max",
+            "qwen-plus",
+            "qwen-turbo",
+            "pixtral-large-latest",
+            "mistral-large-latest",
+            "magistral-medium-2506",
+            "magistral-small-2506",
+            "mistral-small-latest",
+            "ministral-8b-latest",
+            "command-a-03-2025",
+            "command-a-reasoning-08-2025",
+            "command-r-plus",
+            "command-r",
+            "meta-llama/llama-4-scout-17b-16e-instruct",
+            "llama-3.3-70b-versatile",
+            "deepseek-r1-distill-llama-70b",
+            "qwen-qwq-32b",
+            "openai/gpt-oss-120b",
+            "meta-llama/Meta-Llama-3.3-70B-Instruct-Turbo",
+            "Qwen/Qwen2.5-72B-Instruct-Turbo",
+            "deepseek-ai/DeepSeek-V3",
+            "mistralai/Mixtral-8x22B-Instruct-v0.1",
+            "accounts/fireworks/models/deepseek-r1",
+            "accounts/fireworks/models/deepseek-v3",
+            "accounts/fireworks/models/llama-v3p3-70b-instruct",
+            "accounts/fireworks/models/qwen2-vl-72b-instruct",
+            "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8",
+            "meta-llama/Llama-4-Scout-17B-16E-Instruct",
+            "meta-llama/Llama-3.3-70B-Instruct",
+            "deepseek-ai/DeepSeek-R1",
+            "Qwen/QwQ-32B",
+            "llama3.3-70b",
+            "gpt-oss-120b",
+            "qwen-3-32b",
+            "meta-llama/Llama-3.1-8B-Instruct",
+            "moonshotai/Kimi-K2-Instruct",
+            "Qwen/Qwen3-235B-A22B-Instruct-2507",
+            "deepseek-ai/DeepSeek-V3.1",
+            "moonshotai/Kimi-K2-Instruct-0905",
+            "llama3.2",
+            "qwen2.5",
+            "mistral",
+            "gemma3",
+            "phi4"
+          ],
+          "enumDescriptions": [
+            "%config.followPreset%",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "OpenAI",
+            "Anthropic (Claude)",
+            "Anthropic (Claude)",
+            "Anthropic (Claude)",
+            "Anthropic (Claude)",
+            "Anthropic (Claude)",
+            "Anthropic (Claude)",
+            "Anthropic (Claude)",
+            "Anthropic (Claude)",
+            "Google Gemini",
+            "Google Gemini",
+            "Google Gemini",
+            "Google Gemini",
+            "xAI (Grok)",
+            "xAI (Grok)",
+            "xAI (Grok)",
+            "xAI (Grok)",
+            "DeepSeek",
+            "DeepSeek",
+            "Moonshot (Kimi)",
+            "Moonshot (Kimi)",
+            "Moonshot (Kimi)",
+            "Zhipu (智谱 GLM)",
+            "Zhipu (智谱 GLM)",
+            "Zhipu (智谱 GLM)",
+            "Alibaba Qwen (DashScope)",
+            "Alibaba Qwen (DashScope)",
+            "Alibaba Qwen (DashScope)",
+            "Mistral",
+            "Mistral",
+            "Mistral",
+            "Mistral",
+            "Mistral",
+            "Mistral",
+            "Cohere",
+            "Cohere",
+            "Cohere",
+            "Cohere",
+            "Groq",
+            "Groq",
+            "Groq",
+            "Groq",
+            "Groq",
+            "Together AI",
+            "Together AI",
+            "Together AI / DeepInfra",
+            "Together AI",
+            "Fireworks",
+            "Fireworks",
+            "Fireworks",
+            "Fireworks",
+            "DeepInfra",
+            "DeepInfra",
+            "DeepInfra",
+            "DeepInfra",
+            "DeepInfra",
+            "Cerebras",
+            "Cerebras",
+            "Cerebras",
+            "Hugging Face Inference",
+            "Hugging Face Inference",
+            "Baseten",
+            "Baseten",
+            "Baseten",
+            "Ollama (local)",
+            "Ollama (local)",
+            "Ollama (local)",
+            "Ollama (local)",
+            "Ollama (local)"
+          ],
+          "markdownDescription": "%config.openai.model.markdownDescription%"
         },
-        "translate.providers.openai.systemPrompt": {
+        "fine-translate.providers.openai.systemPrompt": {
           "type": "string",
           "default": "You are a precise translator. Output only the translation, no explanation.",
-          "description": "System prompt sent to the LLM."
+          "description": "%config.openai.systemPrompt.description%"
         },
-        "translate.providers.deepl.useFreeApi": {
+        "fine-translate.providers.openai.apiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.openai.apiKey.markdownDescription%"
+        },
+        "fine-translate.providers.deepl.useFreeApi": {
           "type": "boolean",
           "default": true,
-          "description": "Use the DeepL Free API endpoint (otherwise Pro)."
+          "description": "%config.deepl.useFreeApi.description%"
         },
-        "translate.providers.baidu.appId": {
+        "fine-translate.providers.deepl.apiKey": {
           "type": "string",
           "default": "",
-          "description": "Baidu Translation App ID (set the secret via 'Translate: Set API Key' command)."
+          "markdownDescription": "%config.deepl.apiKey.markdownDescription%"
         },
-        "translate.providers.youdao.appKey": {
+        "fine-translate.providers.baidu.appId": {
           "type": "string",
           "default": "",
-          "description": "Youdao Translation App Key (set the app secret via 'Translate: Set API Key' command)."
+          "description": "%config.baidu.appId.description%"
         },
-        "translate.targetLanguage": {
+        "fine-translate.providers.baidu.appSecret": {
           "type": "string",
           "default": "",
-          "description": "Target language (BCP-47, e.g. 'zh-CN', 'en'). Empty means follow vscode.env.language."
+          "markdownDescription": "%config.baidu.appSecret.markdownDescription%"
         },
-        "translate.hover.enabled": {
+        "fine-translate.providers.youdao.appKey": {
+          "type": "string",
+          "default": "",
+          "description": "%config.youdao.appKey.description%"
+        },
+        "fine-translate.providers.youdao.appSecret": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.youdao.appSecret.markdownDescription%"
+        },
+        "fine-translate.targetLanguage": {
+          "type": "string",
+          "default": "",
+          "description": "%config.targetLanguage.description%"
+        },
+        "fine-translate.hover.enabled": {
           "type": "boolean",
           "default": false,
-          "description": "Enable translation on mouse hover. Off by default — every hover triggers a provider request."
+          "description": "%config.hover.enabled.description%"
         },
-        "translate.hover.debounceMs": {
+        "fine-translate.hover.debounceMs": {
           "type": "number",
           "default": 400,
           "minimum": 100,
-          "maximum": 2000
+          "maximum": 2000,
+          "description": "%config.hover.debounceMs.description%"
         },
-        "translate.hover.languages": {
+        "fine-translate.hover.languages": {
           "type": "array",
           "items": {
             "type": "string"
@@ -141,33 +441,35 @@
           "default": [
             "*"
           ],
-          "description": "Document languageIds where hover translation is enabled. ['*'] = all."
+          "description": "%config.hover.languages.description%"
         },
-        "translate.selection.autoOnSelect": {
+        "fine-translate.selection.autoOnSelect": {
           "type": "boolean",
           "default": false,
-          "description": "Automatically translate when selection changes (debounced)."
+          "description": "%config.selection.autoOnSelect.description%"
         },
-        "translate.cache.maxEntries": {
+        "fine-translate.cache.maxEntries": {
           "type": "number",
           "default": 500,
-          "minimum": 0
+          "minimum": 0,
+          "description": "%config.cache.maxEntries.description%"
         },
-        "translate.cache.ttlMinutes": {
+        "fine-translate.cache.ttlMinutes": {
           "type": "number",
           "default": 1440,
-          "minimum": 1
+          "minimum": 1,
+          "description": "%config.cache.ttlMinutes.description%"
         },
-        "translate.maxCharsPerRequest": {
+        "fine-translate.maxCharsPerRequest": {
           "type": "number",
           "default": 4000,
           "minimum": 1,
-          "description": "Source text longer than this is rejected to avoid runaway cost."
+          "description": "%config.maxCharsPerRequest.description%"
         },
-        "translate.telemetry.estimateCost": {
+        "fine-translate.telemetry.estimateCost": {
           "type": "boolean",
           "default": true,
-          "description": "Estimate USD cost in the usage panel based on built-in pricing tables."
+          "description": "%config.telemetry.estimateCost.description%"
         }
       }
     }
@@ -176,7 +478,8 @@
     "build": "node esbuild.config.mjs",
     "watch": "node esbuild.config.mjs --watch",
     "compile": "tsc -p ./",
-    "package": "vsce package",
+    "sync-schema": "node scripts/sync-schema.mjs",
+    "package": "pnpm run sync-schema && vsce package",
     "test:unit": "vitest run",
     "test:e2e": "tsc -p ./ && node ./out/test/runTest.js"
   },

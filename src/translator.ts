@@ -32,7 +32,7 @@ export class Translator {
     if (opts.text.length === 0) throw new Error("Cannot translate empty text");
     const max = this.deps.getMaxCharsPerRequest();
     if (opts.text.length > max) {
-      throw new Error(`Text too long: ${opts.text.length} > ${max} (translate.maxCharsPerRequest)`);
+      throw new Error(`Text too long: ${opts.text.length} > ${max} (fine-translate.maxCharsPerRequest)`);
     }
 
     const { id: providerId, credentials } = await this.deps.resolveProvider();

@@ -7,15 +7,19 @@ export interface ResolvedConfig {
     baseUrl: string;
     model: string;
     systemPrompt: string;
+    apiKey: string;
   };
   deepl: {
     useFreeApi: boolean;
+    apiKey: string;
   };
   baidu: {
     appId: string;
+    appSecret: string;
   };
   youdao: {
     appKey: string;
+    appSecret: string;
   };
   targetLanguage: string;
   hover: {
@@ -36,28 +40,32 @@ export interface ResolvedConfig {
   };
 }
 
-const CONFIG_ROOT = "translate";
+const CONFIG_ROOT = "fine-translate";
 
 function readConfig(): ResolvedConfig {
   const c = vscode.workspace.getConfiguration(CONFIG_ROOT);
   return {
     activeProvider: c.get<ProviderId>("activeProvider", "openai"),
     openai: {
-      baseUrl: c.get<string>("providers.openai.baseUrl", "https://api.openai.com/v1"),
-      model: c.get<string>("providers.openai.model", "gpt-4o-mini"),
+      baseUrl: c.get<string>("providers.openai.baseUrl", ""),
+      model: c.get<string>("providers.openai.model", ""),
       systemPrompt: c.get<string>(
         "providers.openai.systemPrompt",
         "You are a precise translator. Output only the translation, no explanation.",
       ),
+      apiKey: c.get<string>("providers.openai.apiKey", ""),
     },
     deepl: {
       useFreeApi: c.get<boolean>("providers.deepl.useFreeApi", true),
+      apiKey: c.get<string>("providers.deepl.apiKey", ""),
     },
     baidu: {
       appId: c.get<string>("providers.baidu.appId", ""),
+      appSecret: c.get<string>("providers.baidu.appSecret", ""),
     },
     youdao: {
       appKey: c.get<string>("providers.youdao.appKey", ""),
+      appSecret: c.get<string>("providers.youdao.appSecret", ""),
     },
     targetLanguage: c.get<string>("targetLanguage", ""),
     hover: {

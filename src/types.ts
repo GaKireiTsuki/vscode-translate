@@ -1,4 +1,49 @@
-export type ProviderId = "openai" | "deepl" | "youdao" | "baidu";
+export type OpenAICompatProviderId =
+  | "openai"
+  | "anthropic"
+  | "gemini"
+  | "xai"
+  | "deepseek"
+  | "moonshot"
+  | "zhipu"
+  | "qwen"
+  | "mistral"
+  | "cohere"
+  | "groq"
+  | "together"
+  | "fireworks"
+  | "deepinfra"
+  | "cerebras"
+  | "huggingface"
+  | "baseten"
+  | "ollama";
+
+export type ProviderId = OpenAICompatProviderId | "deepl" | "youdao" | "baidu";
+
+export const OPENAI_COMPAT_IDS: readonly OpenAICompatProviderId[] = [
+  "openai",
+  "anthropic",
+  "gemini",
+  "xai",
+  "deepseek",
+  "moonshot",
+  "zhipu",
+  "qwen",
+  "mistral",
+  "cohere",
+  "groq",
+  "together",
+  "fireworks",
+  "deepinfra",
+  "cerebras",
+  "huggingface",
+  "baseten",
+  "ollama",
+];
+
+export function isOpenAICompat(id: ProviderId): id is OpenAICompatProviderId {
+  return (OPENAI_COMPAT_IDS as readonly string[]).includes(id);
+}
 
 export interface TranslateRequest {
   text: string;

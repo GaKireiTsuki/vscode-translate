@@ -3,27 +3,27 @@ import { LRU } from "./cache";
 import { ConfigStore, type ResolvedConfig } from "./config";
 import { clearRegistry, registerProvider } from "./providers";
 import { openaiProvider } from "./providers/openai";
+import { OPENAI_PRESETS, getPreset } from "./providers/openai-presets";
 import { deeplProvider } from "./providers/deepl";
 import { youdaoProvider } from "./providers/youdao";
 import { baiduProvider } from "./providers/baidu";
 import { Secrets, type SecretField } from "./secrets";
 import { StatsRecorder } from "./stats";
 import { Translator } from "./translator";
-import type { ProviderCredentials, ProviderId, StatsState, TranslateResult } from "./types";
-import { emptyStatsState } from "./types";
+import type {
+  ProviderCredentials,
+  ProviderId,
+  StatsState,
+  TranslateResult,
+} from "./types";
+import { emptyStatsState, isOpenAICompat } from "./types";
+import { PROVIDER_LABELS } from "./labels";
 import { HoverManager } from "./ui/hover";
 import { SelectionHandler } from "./ui/selection";
 import { StatusBar } from "./ui/statusBar";
 import { UsagePanel } from "./ui/panel";
 
-const STATS_KEY = "translate.stats.v1";
-
-const PROVIDER_LABELS: Record<ProviderId, string> = {
-  openai: "OpenAI Compatible",
-  deepl: "DeepL",
-  youdao: "Youdao",
-  baidu: "Baidu",
-};
+const STATS_KEY = "fine-translate.stats.v1";
 
 let pendingFlush: () => Promise<void> = async () => {};
 
@@ -100,27 +100,28 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   const usagePanel = new UsagePanel(stats, config);
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("translate.selection", () => selectionHandler.runCommand()),
-    vscode.commands.registerCommand("translate.toggleHover", () => toggleHover(config)),
-    vscode.commands.registerCommand("translate.setApiKey", () => setApiKeyCommand(secrets)),
-    vscode.commands.registerCommand("translate.clearApiKey", () => clearApiKeyCommand(secrets)),
-    vscode.commands.registerCommand("translate.clearCache", () => {
+    vscode.commands.registerCommand("fine-translate.selection", () => selectionHandler.runCommand()),
+    vscode.commands.registerCommand("fine-translate.toggleHover", () => toggleHover(config)),
+    vscode.commands.registerCommand("fine-translate.setApiKey", () => setApiKeyCommand(secrets)),
+    vscode.commands.registerCommand("fine-translate.clearApiKey", () => clearApiKeyCommand(secrets)),
+    vscode.commands.registerCommand("fine-translate.clearCache", () => {
       cache.clear();
-      void vscode.window.showInformationMessage("[translate] Cache cleared.");
+      void vscode.window.showInformationMessage(vscode.l10n.t("Cache cleared."));
     }),
-    vscode.commands.registerCommand("translate.showUsagePanel", () => usagePanel.show()),
-    vscode.commands.registerCommand("translate.resetStats", async () => {
+    vscode.commands.registerCommand("fine-translate.showUsagePanel", () => usagePanel.show()),
+    vscode.commands.registerCommand("fine-translate.resetStats", async () => {
+      const resetLabel = vscode.l10n.t("Reset");
       const ok = await vscode.window.showWarningMessage(
-        "Reset translation statistics?",
+        vscode.l10n.t("Reset translation statistics?"),
         { modal: true },
-        "Reset",
+        resetLabel,
       );
-      if (ok === "Reset") {
+      if (ok === resetLabel) {
         stats.reset();
         await pendingFlush();
       }
     }),
-    vscode.commands.registerCommand("translate.switchProvider", () => switchProviderCommand(config)),
+    vscode.commands.registerCommand("fine-translate.switchProvider", () => switchProviderCommand(config)),
   );
 }
 
@@ -137,28 +138,30 @@ async function resolveCredentials(
   cfg: ResolvedConfig,
   secrets: Secrets,
 ): Promise<ProviderCredentials> {
+  if (isOpenAICompat(id)) {
+    const preset = getPreset(id);
+    return {
+      apiKey: (await secrets.get(id, "apiKey")) || cfg.openai.apiKey || undefined,
+      baseUrl: cfg.openai.baseUrl || preset.baseUrl,
+      model: cfg.openai.model || preset.defaultModel,
+      systemPrompt: cfg.openai.systemPrompt,
+    };
+  }
   switch (id) {
-    case "openai":
-      return {
-        apiKey: await secrets.get("openai", "apiKey"),
-        baseUrl: cfg.openai.baseUrl,
-        model: cfg.openai.model,
-        systemPrompt: cfg.openai.systemPrompt,
-      };
     case "deepl":
       return {
-        apiKey: await secrets.get("deepl", "apiKey"),
+        apiKey: (await secrets.get("deepl", "apiKey")) || cfg.deepl.apiKey || undefined,
         useFreeApi: cfg.deepl.useFreeApi,
       };
     case "youdao":
       return {
         appKey: cfg.youdao.appKey,
-        appSecret: await secrets.get("youdao", "appSecret"),
+        appSecret: (await secrets.get("youdao", "appSecret")) || cfg.youdao.appSecret || undefined,
       };
     case "baidu":
       return {
         appId: cfg.baidu.appId,
-        appSecret: await secrets.get("baidu", "appSecret"),
+        appSecret: (await secrets.get("baidu", "appSecret")) || cfg.baidu.appSecret || undefined,
       };
   }
 }
@@ -167,7 +170,9 @@ async function toggleHover(config: ConfigStore): Promise<void> {
   const enabled = !config.get().hover.enabled;
   await config.update("hover.enabled", enabled);
   void vscode.window.showInformationMessage(
-    `[translate] Hover translation ${enabled ? "enabled" : "disabled"}.`,
+    enabled
+      ? vscode.l10n.t("Hover translation enabled.")
+      : vscode.l10n.t("Hover translation disabled."),
   );
 }
 
@@ -177,20 +182,22 @@ async function setApiKeyCommand(secrets: Secrets): Promise<void> {
       id,
       label,
     })),
-    { title: "Set API key for which provider?" },
+    { title: vscode.l10n.t("Set API key for which provider?") },
   );
   if (!pick) return;
   const useAppSecret = pick.id === "baidu" || pick.id === "youdao";
-  const fieldLabel = useAppSecret ? "App Secret" : "API Key";
+  const fieldLabel = useAppSecret ? vscode.l10n.t("App Secret") : vscode.l10n.t("API Key");
   const value = await vscode.window.showInputBox({
-    title: `Enter ${fieldLabel} for ${pick.label}`,
+    title: vscode.l10n.t("Enter {0} for {1}", fieldLabel, pick.label),
     password: true,
-    placeHolder: "Stored via SecretStorage, not in settings.json.",
+    placeHolder: vscode.l10n.t("Stored via SecretStorage, not in settings.json."),
   });
   if (!value) return;
   const field: SecretField = useAppSecret ? "appSecret" : "apiKey";
   await secrets.set(pick.id, value, field);
-  void vscode.window.showInformationMessage(`[translate] ${pick.label} ${fieldLabel} stored.`);
+  void vscode.window.showInformationMessage(
+    vscode.l10n.t("{0} {1} stored.", pick.label, fieldLabel),
+  );
 }
 
 async function clearApiKeyCommand(secrets: Secrets): Promise<void> {
@@ -199,24 +206,88 @@ async function clearApiKeyCommand(secrets: Secrets): Promise<void> {
       id,
       label,
     })),
-    { title: "Clear API key for which provider?" },
+    { title: vscode.l10n.t("Clear API key for which provider?") },
   );
   if (!pick) return;
   await secrets.deleteAll(pick.id);
-  void vscode.window.showInformationMessage(`[translate] ${pick.label} secrets cleared.`);
+  void vscode.window.showInformationMessage(vscode.l10n.t("{0} secrets cleared.", pick.label));
+}
+
+interface ProviderQuickPickItem extends vscode.QuickPickItem {
+  id?: ProviderId;
 }
 
 async function switchProviderCommand(config: ConfigStore): Promise<void> {
   const current = config.get().activeProvider;
-  const pick = await vscode.window.showQuickPick(
-    (Object.entries(PROVIDER_LABELS) as Array<[ProviderId, string]>).map(([id, label]) => ({
+  const currentLabel = vscode.l10n.t("(current)");
+
+  const items: ProviderQuickPickItem[] = [];
+  items.push({
+    label: vscode.l10n.t("OpenAI-compatible LLMs"),
+    kind: vscode.QuickPickItemKind.Separator,
+  });
+  for (const preset of OPENAI_PRESETS) {
+    items.push({
+      id: preset.id,
+      label: preset.label,
+      description: current === preset.id ? currentLabel : preset.baseUrl,
+      detail: vscode.l10n.t("{0} models · default: {1}", preset.models.length, preset.defaultModel),
+    });
+  }
+  items.push({
+    label: vscode.l10n.t("Traditional translation APIs"),
+    kind: vscode.QuickPickItemKind.Separator,
+  });
+  for (const id of ["deepl", "youdao", "baidu"] as const) {
+    items.push({
       id,
-      label,
-      description: current === id ? "(current)" : undefined,
-    })),
-    { title: "Switch active translation provider" },
-  );
-  if (!pick) return;
-  await config.update("activeProvider", pick.id);
-  void vscode.window.showInformationMessage(`[translate] Active provider → ${pick.label}.`);
+      label: PROVIDER_LABELS[id],
+      description: current === id ? currentLabel : undefined,
+    });
+  }
+
+  const pick = await vscode.window.showQuickPick(items, {
+    title: vscode.l10n.t("Switch translation provider"),
+    matchOnDescription: true,
+    matchOnDetail: true,
+  });
+  if (!pick || !pick.id) return;
+  const pickedId = pick.id;
+
+  if (isOpenAICompat(pickedId)) {
+    const preset = getPreset(pickedId);
+    const model = await pickModelForPreset(preset);
+    if (model === undefined) return;
+    await config.update("providers.openai.baseUrl", preset.baseUrl);
+    await config.update("providers.openai.model", model);
+    await config.update("activeProvider", pickedId);
+    void vscode.window.showInformationMessage(
+      vscode.l10n.t(
+        "Active provider → {0} ({1}). Set the API key via 'Fine Translate: Set API Key…' if needed.",
+        preset.label,
+        model,
+      ),
+    );
+  } else {
+    await config.update("activeProvider", pickedId);
+    void vscode.window.showInformationMessage(
+      vscode.l10n.t("Active provider → {0}.", PROVIDER_LABELS[pickedId]),
+    );
+  }
+}
+
+async function pickModelForPreset(
+  preset: ReturnType<typeof getPreset>,
+): Promise<string | undefined> {
+  if (preset.models.length === 1) return preset.models[0];
+  const defaultLabel = vscode.l10n.t("(default)");
+  const modelItems = preset.models.map((m) => ({
+    label: m,
+    description: m === preset.defaultModel ? defaultLabel : undefined,
+  }));
+  const modelPick = await vscode.window.showQuickPick(modelItems, {
+    title: vscode.l10n.t("Choose model for {0}", preset.label),
+    matchOnDescription: true,
+  });
+  return modelPick?.label;
 }

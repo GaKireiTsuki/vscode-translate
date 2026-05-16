@@ -1,14 +1,7 @@
 import * as vscode from "vscode";
 import type { ConfigStore } from "../config";
+import { PROVIDER_LABELS } from "../labels";
 import type { StatsRecorder } from "../stats";
-import type { ProviderId } from "../types";
-
-const PROVIDER_SHORT: Record<ProviderId, string> = {
-  openai: "OpenAI",
-  deepl: "DeepL",
-  youdao: "Youdao",
-  baidu: "Baidu",
-};
 
 export class StatusBar {
   private readonly item: vscode.StatusBarItem;
@@ -20,8 +13,8 @@ export class StatusBar {
     private readonly config: ConfigStore,
   ) {
     this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    this.item.command = "translate.showUsagePanel";
-    this.item.tooltip = "Translate · click to show usage";
+    this.item.command = "fine-translate.showUsagePanel";
+    this.item.tooltip = vscode.l10n.t("Fine Translate · click to show usage");
     this.update();
   }
 
@@ -40,7 +33,7 @@ export class StatusBar {
   private update(): void {
     const today = this.stats.todaySourceChars();
     const id = this.config.get().activeProvider;
-    const short = PROVIDER_SHORT[id] ?? id;
+    const short = PROVIDER_LABELS[id] ?? id;
     this.item.text = `$(globe) ${today.toLocaleString()} · ${short}`;
   }
 }

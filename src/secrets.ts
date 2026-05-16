@@ -1,7 +1,7 @@
 import type * as vscode from "vscode";
 import type { ProviderId } from "./types";
 
-const SECRET_PREFIX = "translate.secret.";
+const SECRET_PREFIX = "fine-translate.secret.";
 
 export type SecretField = "apiKey" | "appSecret";
 

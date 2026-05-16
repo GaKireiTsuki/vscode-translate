@@ -1,14 +1,8 @@
 import * as vscode from "vscode";
 import type { ConfigStore } from "../config";
+import { PROVIDER_LABELS } from "../labels";
 import type { StatsRecorder } from "../stats";
 import type { ProviderTotals, StatsState } from "../types";
-
-const PROVIDER_LABELS: Record<string, string> = {
-  openai: "OpenAI Compatible",
-  deepl: "DeepL",
-  youdao: "Youdao",
-  baidu: "Baidu",
-};
 
 export class UsagePanel {
   private panel: vscode.WebviewPanel | undefined;
@@ -27,8 +21,8 @@ export class UsagePanel {
       return;
     }
     this.panel = vscode.window.createWebviewPanel(
-      "translate.usage",
-      "Translate · Usage",
+      "fine-translate.usage",
+      vscode.l10n.t("Fine Translate · Usage"),
       vscode.ViewColumn.Active,
       { enableScripts: true, retainContextWhenHidden: false },
     );
@@ -49,9 +43,9 @@ export class UsagePanel {
     if (!msg || typeof msg !== "object") return;
     const m = msg as { type?: string };
     if (m.type === "reset") {
-      void vscode.commands.executeCommand("translate.resetStats");
+      void vscode.commands.executeCommand("fine-translate.resetStats");
     } else if (m.type === "clearCache") {
-      void vscode.commands.executeCommand("translate.clearCache");
+      void vscode.commands.executeCommand("fine-translate.clearCache");
     }
   }
 
@@ -84,11 +78,20 @@ function renderHtml(
   const csp = `default-src 'none'; style-src ${cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';`;
   const total = state.totals;
   const providers = Object.entries(state.byProvider);
+  const t = vscode.l10n.t;
   const body = providers.length === 0
-    ? `<div class="empty">No translations recorded yet.</div>`
+    ? `<div class="empty">${escapeHtml(t("No translations recorded yet."))}</div>`
     : `<table>
-        <thead><tr><th>Provider</th><th>Reqs</th><th>Src chars</th><th>Tgt chars</th><th>Tok in</th><th>Tok out</th><th>Cost (USD)</th></tr></thead>
-        <tbody>${providers.map(([id, t]) => providerRow(id, t, activeProvider)).join("")}</tbody>
+        <thead><tr>
+          <th>${escapeHtml(t("Provider"))}</th>
+          <th>${escapeHtml(t("Reqs"))}</th>
+          <th>${escapeHtml(t("Src chars"))}</th>
+          <th>${escapeHtml(t("Tgt chars"))}</th>
+          <th>${escapeHtml(t("Tok in"))}</th>
+          <th>${escapeHtml(t("Tok out"))}</th>
+          <th>${escapeHtml(t("Cost (USD)"))}</th>
+        </tr></thead>
+        <tbody>${providers.map(([id, row]) => providerRow(id, row, activeProvider)).join("")}</tbody>
       </table>`;
 
   return `<!doctype html>
@@ -116,22 +119,22 @@ function renderHtml(
   .empty { opacity: .6; font-style: italic; padding: 1rem 0; }
 </style>
 </head><body>
-<h1>Translation Usage</h1>
+<h1>${escapeHtml(t("Translation Usage"))}</h1>
 
 <div class="grid">
-  <div class="card"><div class="label">Requests</div><div class="value">${total.requests.toLocaleString()}</div></div>
-  <div class="card"><div class="label">Source chars</div><div class="value">${total.sourceChars.toLocaleString()}</div></div>
-  <div class="card"><div class="label">Target chars</div><div class="value">${total.targetChars.toLocaleString()}</div></div>
-  <div class="card"><div class="label">Tokens in / out</div><div class="value">${total.tokensIn.toLocaleString()} / ${total.tokensOut.toLocaleString()}</div></div>
-  <div class="card"><div class="label">Estimated cost</div><div class="value">$${total.estimatedCostUsd.toFixed(4)}</div></div>
+  <div class="card"><div class="label">${escapeHtml(t("Requests"))}</div><div class="value">${total.requests.toLocaleString()}</div></div>
+  <div class="card"><div class="label">${escapeHtml(t("Source chars"))}</div><div class="value">${total.sourceChars.toLocaleString()}</div></div>
+  <div class="card"><div class="label">${escapeHtml(t("Target chars"))}</div><div class="value">${total.targetChars.toLocaleString()}</div></div>
+  <div class="card"><div class="label">${escapeHtml(t("Tokens in / out"))}</div><div class="value">${total.tokensIn.toLocaleString()} / ${total.tokensOut.toLocaleString()}</div></div>
+  <div class="card"><div class="label">${escapeHtml(t("Estimated cost"))}</div><div class="value">$${total.estimatedCostUsd.toFixed(4)}</div></div>
 </div>
 
-<h2>By provider</h2>
+<h2>${escapeHtml(t("By provider"))}</h2>
 ${body}
 
 <div class="actions">
-  <button class="primary" id="reset" type="button">Reset Statistics</button>
-  <button id="clearCache" type="button">Clear Cache</button>
+  <button class="primary" id="reset" type="button">${escapeHtml(t("Reset Statistics"))}</button>
+  <button id="clearCache" type="button">${escapeHtml(t("Clear Cache"))}</button>
 </div>
 
 <script nonce="${nonce}">
@@ -143,7 +146,7 @@ document.getElementById('clearCache').addEventListener('click', () => vs.postMes
 }
 
 function providerRow(id: string, t: ProviderTotals, active: string): string {
-  const label = PROVIDER_LABELS[id] ?? id;
+  const label = (PROVIDER_LABELS as Record<string, string>)[id] ?? id;
   const cls = id === active ? "active" : "";
   return `<tr class="${cls}"><td>${escapeHtml(label)}</td><td>${t.requests.toLocaleString()}</td><td>${t.sourceChars.toLocaleString()}</td><td>${t.targetChars.toLocaleString()}</td><td>${t.tokensIn.toLocaleString()}</td><td>${t.tokensOut.toLocaleString()}</td><td>$${t.estimatedCostUsd.toFixed(4)}</td></tr>`;
 }
