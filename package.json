@@ -1,0 +1,195 @@
+{
+  "name": "vscode-translate",
+  "displayName": "Translate",
+  "description": "Lightweight in-editor translation: select text, hover, or use the command palette. Supports OpenAI-compatible LLMs (OpenAI / Claude / DeepSeek / Kimi / 智谱 / Ollama / ...), DeepL, Youdao, and Baidu.",
+  "version": "0.1.0",
+  "publisher": "your-publisher-id",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "translate.selection",
+        "title": "Translate: Translate Selection"
+      },
+      {
+        "command": "translate.toggleHover",
+        "title": "Translate: Toggle Hover Translation"
+      },
+      {
+        "command": "translate.setApiKey",
+        "title": "Translate: Set API Key…"
+      },
+      {
+        "command": "translate.clearApiKey",
+        "title": "Translate: Clear API Key…"
+      },
+      {
+        "command": "translate.clearCache",
+        "title": "Translate: Clear Cache"
+      },
+      {
+        "command": "translate.showUsagePanel",
+        "title": "Translate: Show Usage"
+      },
+      {
+        "command": "translate.resetStats",
+        "title": "Translate: Reset Statistics"
+      },
+      {
+        "command": "translate.switchProvider",
+        "title": "Translate: Switch Provider"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "translate.selection",
+          "when": "editorHasSelection",
+          "group": "1_modification"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "translate.selection",
+        "key": "ctrl+shift+t",
+        "mac": "cmd+shift+t",
+        "when": "editorTextFocus && editorHasSelection"
+      }
+    ],
+    "configuration": {
+      "title": "Translate",
+      "properties": {
+        "translate.activeProvider": {
+          "type": "string",
+          "default": "openai",
+          "enum": [
+            "openai",
+            "deepl",
+            "youdao",
+            "baidu"
+          ],
+          "enumDescriptions": [
+            "OpenAI-compatible (OpenAI / Claude / DeepSeek / Kimi / 智谱 / Ollama / ...)",
+            "DeepL API",
+            "Youdao Translation",
+            "Baidu Translation"
+          ],
+          "description": "Active translation provider."
+        },
+        "translate.providers.openai.baseUrl": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "Base URL for the OpenAI-compatible endpoint."
+        },
+        "translate.providers.openai.model": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "Model name for the OpenAI-compatible provider."
+        },
+        "translate.providers.openai.systemPrompt": {
+          "type": "string",
+          "default": "You are a precise translator. Output only the translation, no explanation.",
+          "description": "System prompt sent to the LLM."
+        },
+        "translate.providers.deepl.useFreeApi": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use the DeepL Free API endpoint (otherwise Pro)."
+        },
+        "translate.providers.baidu.appId": {
+          "type": "string",
+          "default": "",
+          "description": "Baidu Translation App ID (set the secret via 'Translate: Set API Key' command)."
+        },
+        "translate.providers.youdao.appKey": {
+          "type": "string",
+          "default": "",
+          "description": "Youdao Translation App Key (set the app secret via 'Translate: Set API Key' command)."
+        },
+        "translate.targetLanguage": {
+          "type": "string",
+          "default": "",
+          "description": "Target language (BCP-47, e.g. 'zh-CN', 'en'). Empty means follow vscode.env.language."
+        },
+        "translate.hover.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable translation on mouse hover. Off by default — every hover triggers a provider request."
+        },
+        "translate.hover.debounceMs": {
+          "type": "number",
+          "default": 400,
+          "minimum": 100,
+          "maximum": 2000
+        },
+        "translate.hover.languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "*"
+          ],
+          "description": "Document languageIds where hover translation is enabled. ['*'] = all."
+        },
+        "translate.selection.autoOnSelect": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically translate when selection changes (debounced)."
+        },
+        "translate.cache.maxEntries": {
+          "type": "number",
+          "default": 500,
+          "minimum": 0
+        },
+        "translate.cache.ttlMinutes": {
+          "type": "number",
+          "default": 1440,
+          "minimum": 1
+        },
+        "translate.maxCharsPerRequest": {
+          "type": "number",
+          "default": 4000,
+          "minimum": 1,
+          "description": "Source text longer than this is rejected to avoid runaway cost."
+        },
+        "translate.telemetry.estimateCost": {
+          "type": "boolean",
+          "default": true,
+          "description": "Estimate USD cost in the usage panel based on built-in pricing tables."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "watch": "node esbuild.config.mjs --watch",
+    "compile": "tsc -p ./",
+    "package": "vsce package",
+    "test:unit": "vitest run",
+    "test:e2e": "tsc -p ./ && node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.0",
+    "@vscode/vsce": "^3.9.1",
+    "esbuild": "^0.20.0",
+    "glob": "^13.0.6",
+    "mocha": "^11.7.5",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}
