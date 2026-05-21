@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 — 2026-05-21
+
+feat: 增加对 Markdown 结构保留的支持，优化悬停翻译和选区翻译逻辑
+
+# Changelog
+
 ## 0.2.0 — 2026-05-16
 
 Major refactor: 18 OpenAI-compatible LLM providers are now first-class top-level providers (previously bundled under a single `openai` id).
