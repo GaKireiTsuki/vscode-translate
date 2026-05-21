@@ -8,6 +8,7 @@ export interface TranslateOptions {
   targetLang: string;
   sourceLang?: string;
   signal?: AbortSignal;
+  preserveMarkdown?: boolean;
 }
 
 export interface ResolvedProvider {
@@ -46,6 +47,7 @@ export class Translator {
       targetLang: opts.targetLang,
       sourceLang: opts.sourceLang,
       text: opts.text,
+      preserveMarkdown: opts.preserveMarkdown,
     });
 
     const cache = this.deps.getCache();
@@ -63,6 +65,7 @@ export class Translator {
             sourceLang: opts.sourceLang,
             targetLang: opts.targetLang,
             signal: opts.signal,
+            preserveMarkdown: opts.preserveMarkdown,
           },
           credentials,
         );

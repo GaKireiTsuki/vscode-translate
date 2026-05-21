@@ -23,6 +23,15 @@ interface ChatCompletionResponse {
 
 function buildUserPrompt(req: TranslateRequest): string {
   const src = req.sourceLang ? `${req.sourceLang} ` : "";
+  if (req.preserveMarkdown) {
+    return [
+      `Translate the following ${src}markdown into ${req.targetLang}.`,
+      "Preserve the original markdown structure exactly: headings, bold/italic, lists, blockquotes, line breaks, link syntax `[label](url)`, and inline code. Translate only the natural-language text — do not translate or modify URLs, link targets, code identifiers, or values inside backticks.",
+      "Output only the translated markdown, with no commentary, no surrounding quotes, and no fences around the whole answer.",
+      "",
+      req.text,
+    ].join("\n");
+  }
   return `Translate the following ${src}text into ${req.targetLang}. Output only the translation, no commentary, no quotes, no markdown.\n\n${req.text}`;
 }
 

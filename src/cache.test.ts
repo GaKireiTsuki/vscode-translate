@@ -80,4 +80,10 @@ describe("cacheKey", () => {
     const b = cacheKey({ providerId: "openai", sourceLang: "auto", targetLang: "zh-CN", text: "hello" });
     expect(a).toBe(b);
   });
+
+  it("differs when preserveMarkdown flips", () => {
+    const a = cacheKey({ providerId: "openai", targetLang: "zh-CN", text: "**hello**" });
+    const b = cacheKey({ providerId: "openai", targetLang: "zh-CN", text: "**hello**", preserveMarkdown: true });
+    expect(a).not.toBe(b);
+  });
 });

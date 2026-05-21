@@ -8,6 +8,7 @@ export interface CacheKeyParts {
   targetLang: string;
   sourceLang?: string;
   text: string;
+  preserveMarkdown?: boolean;
 }
 
 export function cacheKey(parts: CacheKeyParts): string {
@@ -17,6 +18,7 @@ export function cacheKey(parts: CacheKeyParts): string {
     parts.baseUrl ?? "",
     parts.targetLang,
     parts.sourceLang ?? "auto",
+    parts.preserveMarkdown ? "md" : "txt",
     parts.text,
   ].join("|");
   return crypto.createHash("sha1").update(composed).digest("hex");

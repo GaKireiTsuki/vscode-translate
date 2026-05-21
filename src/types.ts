@@ -50,6 +50,8 @@ export interface TranslateRequest {
   sourceLang?: string;
   targetLang: string;
   signal?: AbortSignal;
+  /** Ask LLM providers to preserve markdown structure (headings, bold, lists, links). REST providers ignore this. */
+  preserveMarkdown?: boolean;
 }
 
 export interface TranslateUsage {
