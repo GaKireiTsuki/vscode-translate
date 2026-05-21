@@ -489,7 +489,7 @@
     "@types/vscode": "^1.85.0",
     "@vscode/test-electron": "^2.3.0",
     "@vscode/vsce": "^3.9.1",
-    "esbuild": "^0.20.0",
+    "esbuild": "^0.25.0",
     "glob": "^13.0.6",
     "mocha": "^11.7.5",
     "typescript": "^5.4.0",
